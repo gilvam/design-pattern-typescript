@@ -1,0 +1,118 @@
+import { PaymentProcessor } from './payment-processor';
+import { HttpPaymentService } from '../_shared/http/http-payment.service';
+import { User } from '../_shared/models/user';
+import { PayMethodEnum } from '../_shared/models/enums/pay-method.enum';
+import { CardTypeEnum } from '../_shared/models/enums/card-type.enum';
+import { BankTransferTypeEnum } from '../_shared/models/enums/bank-transfer-type.enum';
+import { CurrencyEnum } from '../_shared/models/enums/currency.enum';
+
+describe('PaymentProcessor', () => {
+	let paymentProcessor: PaymentProcessor;
+	let mockHttpPaymentService: jest.Mocked<HttpPaymentService>;
+
+	beforeEach(() => {
+		mockHttpPaymentService = new HttpPaymentService() as jest.Mocked<HttpPaymentService>;
+		mockHttpPaymentService.payCreditCardInstallmentUsd = jest.fn();
+		mockHttpPaymentService.payCreditCardInstallmentEur = jest.fn();
+		mockHttpPaymentService.payCreditCardOneTimeUsd = jest.fn();
+		mockHttpPaymentService.payCreditCardOneTimeEur = jest.fn();
+		mockHttpPaymentService.payPaypalUsd = jest.fn();
+		mockHttpPaymentService.payPaypalEur = jest.fn();
+		mockHttpPaymentService.payBankTransferTedUsd = jest.fn();
+		mockHttpPaymentService.payBankTransferTedEur = jest.fn();
+		mockHttpPaymentService.payBankTransferPixUsd = jest.fn();
+		mockHttpPaymentService.payBankTransferPixEur = jest.fn();
+		mockHttpPaymentService.payBankTransferBanckSlipUsd = jest.fn();
+		mockHttpPaymentService.payBankTransferBanckSlipEur = jest.fn();
+
+		paymentProcessor = new PaymentProcessor(mockHttpPaymentService);
+	});
+
+	// Testes para pagamentos com cartão de crédito
+	test('should pay with credit card installments in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.CREDIT_CARD, CardTypeEnum.INSTALLMENTS, 100, CurrencyEnum.USD, new User(), 3);
+		expect(mockHttpPaymentService.payCreditCardInstallmentUsd).toHaveBeenCalledWith(new User(), 100, 3);
+	});
+
+	test('should pay with credit card installments in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.CREDIT_CARD, CardTypeEnum.INSTALLMENTS, 100, CurrencyEnum.EUR, new User(), 3);
+		expect(mockHttpPaymentService.payCreditCardInstallmentEur).toHaveBeenCalledWith(new User(), 100, 3);
+	});
+
+	test('should pay with credit card one-time payment in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.CREDIT_CARD, CardTypeEnum.ONE_TIME, 100, CurrencyEnum.USD, new User(), 1);
+		expect(mockHttpPaymentService.payCreditCardOneTimeUsd).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with credit card one-time payment in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.CREDIT_CARD, CardTypeEnum.ONE_TIME, 100, CurrencyEnum.EUR, new User(), 1);
+		expect(mockHttpPaymentService.payCreditCardOneTimeEur).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	// test('should throw error for unsupported currency for credit card', () => {
+	// 	expect(() => {
+	// 		paymentProcessor.pay('creditCard', 'oneTime', 100, 'GBP', new User(), 1);
+	// 	}).toThrow('Unsupported currency for Credit Card: GBP');
+	// });
+
+	// Testes para pagamentos com PayPal
+	test('should pay with PayPal in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.PAYPAL, '' as CardTypeEnum, 100, CurrencyEnum.USD, new User(), 1);
+		expect(mockHttpPaymentService.payPaypalUsd).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with PayPal in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.PAYPAL, '' as CardTypeEnum, 100, CurrencyEnum.EUR, new User(), 1);
+		expect(mockHttpPaymentService.payPaypalEur).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should throw error for unsupported currency for PayPal', () => {
+		expect(() => {
+			paymentProcessor.pay(PayMethodEnum.PAYPAL, '' as CardTypeEnum, 100, 'GBP' as CurrencyEnum, new User(), 1);
+		}).toThrow('Unsupported currency for PayPal: GBP');
+	});
+
+	// Testes para pagamentos com transferência bancária
+	test('should pay with bank transfer TED in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.TED, 100, CurrencyEnum.USD, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferTedUsd).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with bank transfer TED in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.TED, 100, CurrencyEnum.EUR, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferTedEur).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with bank transfer PIX in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.PIX, 100, CurrencyEnum.USD, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferPixUsd).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with bank transfer PIX in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.PIX, 100, CurrencyEnum.EUR, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferPixEur).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with bank transfer BANK_SLIP in USD', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.BANK_SLIP, 100, CurrencyEnum.USD, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferBanckSlipUsd).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	test('should pay with bank transfer BANK_SLIP in EUR', () => {
+		paymentProcessor.pay(PayMethodEnum.BANK_TRANSFER, BankTransferTypeEnum.BANK_SLIP, 100, CurrencyEnum.EUR, new User(), 1);
+		expect(mockHttpPaymentService.payBankTransferBanckSlipEur).toHaveBeenCalledWith(new User(), 100);
+	});
+
+	// test('should throw error for unsupported currency for bank transfer', () => {
+	// 	expect(() => {
+	// 		paymentProcessor.pay('bankTransfer', 'BANK_SLIP', 100, 'GBP', new User(), 1);
+	// 	}).toThrow('Unsupported currency for Bank Transfer: GBP');
+	// });
+
+
+	test('should throw error for invalid payment method', () => {
+		expect(() => {
+			paymentProcessor.pay('crypto' as PayMethodEnum, '' as CardTypeEnum, 100, CurrencyEnum.USD, new User(), 1);
+		}).toThrow('Invalid payment method: crypto');
+	});
+});
