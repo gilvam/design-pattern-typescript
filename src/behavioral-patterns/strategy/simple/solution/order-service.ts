@@ -6,8 +6,9 @@ import { EmailService } from './services/email.service';
 import { SmsService } from './services/sms.service';
 import { PushService } from './services/push.service';
 
-export abstract class ConfigureService {
-	static configure(notificationType: NotificationTypeEnum): IOrderNotifier {
+// TODO: valid to keep this class in a separate file
+export abstract class OrderNotifierSelect {
+	static get(notificationType: NotificationTypeEnum): IOrderNotifier {
 		const notificationServiceMap: { [key in NotificationTypeEnum]: new () => IOrderNotifier } = {
 			[NotificationTypeEnum.EMAIL]: EmailService,
 			[NotificationTypeEnum.SMS]: SmsService,
@@ -22,12 +23,17 @@ export abstract class ConfigureService {
 }
 
 export class OrderService {
-	constructor(private orderNotifier: IOrderNotifier) {
+	private orderNotifier: IOrderNotifier;
+	order = new Order();
+
+	constructor(notificationType: NotificationTypeEnum){
+		this.orderNotifier = OrderNotifierSelect.get(notificationType);
 	}
 
-	shipOrder(order: Order) {
-		order.status = OrderStatusEnum.SHIPPED;
-		order.shippedAt = new Date();
-		this.orderNotifier.shipped(order);
+	ship(order: Order) {
+		this.order = order;
+		this.order.status = OrderStatusEnum.SHIPPED;
+		this.order.shippedAt = new Date();
+		this.orderNotifier.shipped(this.order);
 	}
 }

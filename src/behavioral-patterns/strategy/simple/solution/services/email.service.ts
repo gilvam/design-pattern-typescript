@@ -3,6 +3,7 @@ import { IOrderNotifier } from './interfaces/order-notifier.interface';
 
 export class EmailService implements IOrderNotifier {
 	send(to: string, subject: string, message: string) {
+		console.info('EmailService: ', to, subject, message);
 		// ...
 	}
 

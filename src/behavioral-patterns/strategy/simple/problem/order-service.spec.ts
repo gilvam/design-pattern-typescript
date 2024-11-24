@@ -23,7 +23,7 @@ describe('OrderService', () => {
 	});
 
 	it('should ship order and send email notification', () => {
-		const order = new Order(1, 'test@example.com', '123456789', OrderStatusEnum.CREATED);
+		const order = new Order(OrderStatusEnum.CREATED, 1, 'Av. x', 'test@example.com', '123456789');
 		orderService.appConfig.notificationType = NotificationTypeEnum.EMAIL;
 
 		orderService.shipOrder(order);
@@ -37,7 +37,7 @@ describe('OrderService', () => {
 	});
 
 	it('should ship order and send SMS notification', () => {
-		const order = new Order(1, 'test@example.com', '123456789', OrderStatusEnum.CREATED);
+		const order = new Order(OrderStatusEnum.CREATED, 1, 'Av. x', 'test@example.com', '123456789');
 		orderService.appConfig.notificationType = NotificationTypeEnum.SMS;
 
 		orderService.shipOrder(order);
@@ -47,7 +47,7 @@ describe('OrderService', () => {
 	});
 
 	it('should ship order and send Push notification', () => {
-		const order = new Order(1, 'test@example.com', '123456789', OrderStatusEnum.CREATED);
+		const order = new Order(OrderStatusEnum.CREATED, 1, 'Av. x', 'test@example.com', '123456789');
 		orderService.appConfig.notificationType = NotificationTypeEnum.PUSH;
 
 		orderService.shipOrder(order);

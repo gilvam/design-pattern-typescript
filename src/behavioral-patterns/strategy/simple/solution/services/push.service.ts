@@ -3,6 +3,7 @@ import { IOrderNotifier } from './interfaces/order-notifier.interface';
 
 export class PushService implements IOrderNotifier {
 	send(to: string, message: string) {
+		console.info('PushService: ', to, message);
 		// ...
 	}
 
