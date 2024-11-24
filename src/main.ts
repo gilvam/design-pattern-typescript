@@ -1,12 +1,9 @@
 import { Order } from './behavioral-patterns/strategy/simple/_shared/models/order.model';
 import { OrderService } from './behavioral-patterns/strategy/simple/solution/order-service';
 import { NotificationTypeEnum } from './behavioral-patterns/strategy/simple/_shared/models/notification-type.enum';
-import { PushService } from './behavioral-patterns/strategy/simple/solution/services/push.service';
 import { OrderStatusEnum } from './behavioral-patterns/strategy/simple/_shared/models/order-status.enum';
 
 const order = new Order(OrderStatusEnum.CREATED, 1, 'address', 'email', 'phone');
-console.log(order);
-
 
 const orderService = new OrderService(NotificationTypeEnum.SMS);
 orderService.ship(order);
